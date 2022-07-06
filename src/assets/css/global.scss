@@ -1,0 +1,51 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+body{
+    width: 100vw;
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+@media screen and (max-width:576px) {
+    html {
+        font-size: 40px
+    }
+
+    body {
+        font-size: 12px
+    }
+}
+
+@media screen and (min-width:576px) {
+    html {
+        font-size: 50px
+    }
+
+    body {
+        font-size: 12px
+    }
+}
+
+@media screen and (min-width:720px) {
+    html {
+        font-size: 50px
+    }
+
+    body {
+        font-size: 20px
+    }
+}
+
+@media screen and (min-width:960px) {
+    html {
+        font-size: 50px
+    }
+
+    body {
+        font-size: 24px
+    }
+}
