@@ -48,7 +48,4 @@ checkTokenTime();
   height: 100vh;
   background-color: #34495e;
 }
-.main {
-  background-color: skyblue;
-}
 </style>

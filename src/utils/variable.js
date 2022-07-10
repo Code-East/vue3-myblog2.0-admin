@@ -1,0 +1,1 @@
+export const uploadSaveUrl = "http://lxoblog-image.test.upcdn.net";

@@ -16,7 +16,6 @@ watch(
   route,
   () => {
     routename.value = route.name;
-    console.log(route.name);
   },
   { deep: true, immediate: true }
 );

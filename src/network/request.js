@@ -56,7 +56,7 @@ service.interceptors.response.use(
             msg.close();
         }
         if (error.response) {
-            msg = ElMessage({ type: 'error', message: error.response.data.message });
+            msg = ElMessage({ type: 'error', message: "请求出错,联系管理员咯！" });
         }
         return Promise.reject(new Error(error.response.data.message));
     }

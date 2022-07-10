@@ -6,8 +6,15 @@ export const useStore = defineStore('main', {
     state: () => {
         return {
             token: '',
-            userinfo: '',
+            userinfo: {},
             nowPath: '/user'
+        }
+    },
+    actions: {
+        clearData() {
+            this.token = '';
+            this.userinfo = {};
+            this.nowPath = '';
         }
     }
 })

@@ -5,7 +5,6 @@ import request from './request';
 export const getCaptcha = () => {
     return request({
         url: '/getcaptcha',
-        method: 'get'
     })
 }
 

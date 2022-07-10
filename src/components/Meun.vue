@@ -20,11 +20,10 @@
 
 <script setup>
 import { reactive, ref, watch } from "vue";
-import { useStore } from "store";
 import { useRoute } from "vue-router";
-const store = useStore();
+
 const route = useRoute();
-const asideList = reactive([
+const adminList = reactive([
   {
     id: 1,
     name: "首页",
@@ -62,14 +61,43 @@ const asideList = reactive([
     icon: "ChatLineSquare",
   },
 ]);
+const commonList = reactive([
+  {
+    id: 1,
+    name: "首页",
+    path: "/index",
+    icon: "House",
+  },
+  {
+    id: 2,
+    name: "个人中心",
+    path: "/personal",
+    icon: "User",
+  },
+  {
+    id: 3,
+    name: "文章管理",
+    path: "/article",
+    icon: "Document",
+  },
+  {
+    id: 4,
+    name: "评论管理",
+    path: "/comment",
+    icon: "ChatLineSquare",
+  },
+]);
 
+const isadmin = JSON.parse(localStorage.getItem("userinfo")).isadmin;
+//查看是否是admin用户从而选择性绚烂左侧列表
+const asideList = isadmin == 1 ? adminList : commonList;
 //保存当前点击的path 刷新页面就不会跳转了
 let nowPath = ref(localStorage.getItem("nowPath"));
-console.log("xz", nowPath.value);
 const savePath = (path) => {
   nowPath.value = path;
   localStorage.setItem("nowPath", path);
 };
+//使用watch监视route的变化
 watch(
   route,
   () => {

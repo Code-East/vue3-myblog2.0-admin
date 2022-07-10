@@ -6,6 +6,10 @@ const router = createRouter({
     history: createWebHistory(),
     routes: [
         {
+            path: '/',
+            redirect: '/index',
+        },
+        {
             path: '/login',
             name: 'login',
             component: () => import('view/login/index.vue')
@@ -24,6 +28,11 @@ const router = createRouter({
                     path: 'user',
                     name: 'user',
                     component: () => import('view/user/index.vue')
+                },
+                {
+                    path: 'personal',
+                    name: 'personal',
+                    component: () => import('view/personal/index.vue')
                 },
                 {
                     path: 'article',

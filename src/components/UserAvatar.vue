@@ -13,11 +13,16 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { useStore } from "store";
 const router = useRouter();
-const circleUrl = ref(
-  "https://img2.baidu.com/it/u=1994380678,3283034272&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500"
-);
+const store = useStore();
+//判断是否有头像 没有就是有默认头像
+const userpic = JSON.parse(localStorage.getItem("userinfo")).userpic
+  ? JSON.parse(localStorage.getItem("userinfo")).userpic
+  : "http://lxoblog-image.test.upcdn.net/userpic/%E5%A4%B4%E5%83%8F%20%E7%94%B7%E5%AD%A9.png";
+const circleUrl = ref(userpic);
 const outLogin = () => {
+  store.clearData();
   localStorage.clear();
   router.replace("/login");
 };

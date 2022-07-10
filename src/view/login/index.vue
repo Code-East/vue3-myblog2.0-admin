@@ -89,32 +89,41 @@ const rules = reactive({
 });
 
 //点击登入按钮发送登入请求
+const ruleFormRef = ref(null);
 let msg;
-const submitForm = async () => {
-  if (form.username == "" || form.password == "" || form.code == "") {
-    if (msg) {
-      msg.close();
+const submitForm = () => {
+  //验证表单合法性
+  ruleFormRef.value.validate(async (valid) => {
+    //成功
+    if (valid) {
+      //发送登入请求
+      const data = await login(form);
+      //登入成功 将token和用户信息存入store
+      store.$patch({
+        userinfo: data.userinfo,
+        token: data.token,
+      });
+      //将token和用户信息存入localStorage
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("userinfo", JSON.stringify(data.userinfo));
+      localStorage.setItem("nowPath", "/index");
+      ElMessage({
+        type: "success",
+        message: "登入成功，欢迎你" + data.userinfo.username,
+      });
+      //跳转
+      router.replace("/index");
+    } else {
+      //表单验证失败
+      if (msg) {
+        msg.close();
+      }
+      msg = ElMessage({
+        type: "warning",
+        message: "请按照要求填写！",
+      });
     }
-    msg = ElMessage({
-      message: "请将数据填写完整哦!",
-      type: "warning",
-    });
-    return;
-  }
-  //发送登入请求
-  const data = await login(form);
-
-  //登入成功 将token和用户信息存入store
-  store.$patch({
-    userinfo: data.userinfo,
-    token: data.token,
   });
-  //将token和用户信息存入localStorage
-  localStorage.setItem("token", data.token);
-  localStorage.setItem("userinfo", JSON.stringify(data.userinfo));
-  localStorage.setItem("nowPath", "/index");
-  //跳转
-  router.replace("/index");
 };
 </script>
 
