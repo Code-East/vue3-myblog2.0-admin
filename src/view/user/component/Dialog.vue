@@ -17,14 +17,12 @@
           <el-upload
             ref="uploadRef"
             class="avatar-uploader"
-            accept="image/png, image/jpeg"
+            accept="image/png, image/jpeg, image/jpg"
             :data="fileData"
-            :show-file-list="false"
             :on-success="handleSuccess"
             :on-error="handleFormatError"
-            :before-upload="beforeAvatarUpload"
             :disabled="isDisabled"
-            action="http://v0.api.upyun.com/lxoblog-image.b0.aicdn.com"
+            :action="uploadYun"
             @click="uploadClick"
           >
             <img v-if="imageUrl" :src="imageUrl" class="avatar_img" />
@@ -36,19 +34,25 @@
           prop="username"
           :label-width="formLabelWidth"
         >
-          <el-input v-model="form.username" />
+          <el-input v-model="form.username" :readonly="isCheck" />
         </el-form-item>
         <el-form-item
           label="密码"
           prop="password"
           :label-width="formLabelWidth"
         >
-          <el-input v-model="form.password" type="password" show-password />
+          <el-input
+            v-model="form.password"
+            type="password"
+            show-password
+            :readonly="isCheck"
+          />
         </el-form-item>
         <el-form-item
           label="确认密码"
           prop="password"
           :label-width="formLabelWidth"
+          v-if="props.dialogTitle == '增加用户'"
         >
           <el-input v-model="replyPassword" type="password" show-password />
         </el-form-item>
@@ -57,10 +61,10 @@
           :label-width="formLabelWidth"
           prop="nickname"
         >
-          <el-input v-model="form.nickname" />
+          <el-input v-model="form.nickname" :readonly="isCheck" />
         </el-form-item>
         <el-form-item label="邮箱" :label-width="formLabelWidth" prop="email">
-          <el-input v-model="form.email" />
+          <el-input v-model="form.email" :readonly="isCheck" />
         </el-form-item>
         <el-form-item label="管理员" :label-width="formLabelWidth">
           <el-switch
@@ -68,13 +72,19 @@
             inline-prompt
             active-text="是"
             inactive-text="否"
+            :disabled="isCheck"
           />
         </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="dialogClose">取消</el-button>
-          <el-button type="primary" @click="handleCommit">提交</el-button>
+          <el-button type="primary" @click="handleAddCommit" v-if="addSubmit"
+            >增加</el-button
+          >
+          <el-button type="primary" @click="handleEditCommit" v-if="editSubmit"
+            >编辑</el-button
+          >
         </span>
       </template>
     </el-dialog>
@@ -82,22 +92,48 @@
 </template>
 
 <script setup>
-import { reactive, ref } from "vue";
+import { reactive, ref, watch } from "vue";
 import { ElMessage } from "element-plus";
-import { addUser } from "network/user";
+import { addUser, setUser } from "network/user";
 import { upyunSignature } from "@/utils/uploadyun.js";
-import { uploadSaveUrl } from "@/utils/variable.js";
+import { uploadSaveUrl, uploadAction } from "@/utils/variable.js";
 import { rulesObj } from "@/utils/formRules.js";
+//文件上传
+const uploadRef = ref(null);
+//是否禁止上传
+const isDisabled = ref(false);
+//文件参数 调用utils里面的参数获得
+const fileData = upyunSignature("/userpic");
+
 const formLabelWidth = "80px";
+const imageUrl = ref();
+const uploadYun = ref(uploadAction);
+let isCheck = ref(false);
 //props
 const props = defineProps({
   dialogStatus: Boolean,
   dialogTitle: String,
+  formData: Object,
 });
 const emit = defineEmits(["closeDialog", "reviewUser"]);
+const addSubmit = ref(false);
+const editSubmit = ref(false);
+
+if (props.dialogTitle == "增加用户") {
+  addSubmit.value = true;
+  editSubmit.value = false;
+} else if (props.dialogTitle == "编辑用户") {
+  editSubmit.value = true;
+  addSubmit.value = false;
+} else {
+  isCheck.value = true;
+  isDisabled.value = true;
+  editSubmit.value = false;
+  addSubmit.value = false;
+}
 
 //from对象
-const form = reactive({
+let form = ref({
   userpic: "",
   username: "",
   password: "",
@@ -105,6 +141,18 @@ const form = reactive({
   email: "",
   isadmin: false,
 });
+//监视传递过来的表单
+watch(
+  () => props.formData,
+  (newval) => {
+    form.value = newval;
+    if (form.value.isadmin) {
+      form.value.isadmin = true;
+    }
+    imageUrl.value = form.value.userpic;
+  },
+  { deep: true }
+);
 
 let msg = "";
 //关闭dialog方法 触发父函数
@@ -112,19 +160,24 @@ const dialogClose = () => {
   emit("closeDialog");
 };
 
-//文件上传
-//是否禁止上传
-const isDisabled = ref(false);
-//文件参数 调用utils里面的参数获得
-const fileData = upyunSignature("/userpic");
-//服务器地址
-const imageUrl = ref();
 //点击上传
 const uploadClick = () => {
-  //判断是否上传过了
-  if (isDisabled.value) {
+  console.log(props.dialogTitle);
+  if (props.dialogTitle == "查看用户") {
+    //禁用文件上传
     if (msg) {
-      msgOne.close();
+      msg.close();
+    }
+    msg = ElMessage({
+      type: "warning",
+      message: "只能看看，不能动哦！",
+    });
+    return "";
+  }
+  if (isDisabled.value) {
+    //判断是否上传过了
+    if (msg) {
+      msg.close();
     }
     msg = ElMessage({
       type: "warning",
@@ -134,11 +187,10 @@ const uploadClick = () => {
 };
 //上传成功
 const handleSuccess = (res) => {
-  console.log("上传成功", res);
   isDisabled.value = true;
   //拼接图片保存的地址
   imageUrl.value = uploadSaveUrl + res.url;
-  form.userpic = imageUrl.value;
+  form.value.userpic = imageUrl.value;
 };
 //上传失败
 const handleFormatError = (file) => {
@@ -153,12 +205,12 @@ const replyPassword = ref("");
 const rules = reactive(rulesObj);
 //获取表单ref
 const fromRef = ref(null);
-//点击提交按钮的处理函数
-const handleCommit = () => {
+//点击增加按钮的处理函数
+const handleAddCommit = () => {
   fromRef.value.validate(async (valid) => {
     if (valid) {
       //判断两次密码是否相同
-      if (replyPassword.value !== form.password) {
+      if (replyPassword.value !== form.value.password) {
         if (msg) {
           msg.close();
         }
@@ -168,12 +220,40 @@ const handleCommit = () => {
         });
         return;
       }
-      //过滤是否是admin
-      // form.isadmin = form.isadmin == true ? 1 : 0;
-      const data = await addUser(form);
+      //如果图片为空设为默认图片
+      if (imageUrl.value == "") {
+        form.value.userpic =
+          "http://lxoblog-image.test.upcdn.net/userpic/default.png";
+      }
+      const data = await addUser(form.value);
       msg = ElMessage({
         type: "success",
         message: "增加成功！",
+      });
+      //重新绚烂user列表
+      emit("reviewUser");
+      //关闭弹窗
+      dialogClose();
+    } else {
+      if (msg) {
+        msg.close();
+      }
+      msg = ElMessage({
+        type: "warning",
+        message: "请按照要求填写！",
+      });
+    }
+  });
+};
+//点击编辑发送编辑请求
+const handleEditCommit = async () => {
+  fromRef.value.validate(async (valid) => {
+    if (valid) {
+      console.log("点击编辑：", form.value);
+      await setUser(form.value);
+      msg = ElMessage({
+        type: "success",
+        message: "修改成功！",
       });
       //重新绚烂user列表
       emit("reviewUser");
@@ -195,17 +275,19 @@ const handleCommit = () => {
 
 <style lang="scss" scoped>
 .avatar_img {
-  width: 101px;
-  height: 101px;
+  width: 102px;
+  height: 102px;
   position: relative;
-  top: -2px;
-  left: -2px;
+  top: -3px;
+  left: -3px;
+  border-radius: 50%;
 }
 .avatar-uploader {
   width: 100px;
   height: 100px;
   display: block;
   border: 2px dashed #8c939d;
+  border-radius: 50%;
   transition: 0.5s;
   &:hover {
     border: 2px dashed skyblue;
@@ -217,5 +299,11 @@ const handleCommit = () => {
   width: 100px;
   height: 100px;
   text-align: center;
+}
+::v-deep .el-upload-list {
+  position: relative;
+  position: relative;
+  top: -95%;
+  left: 115%;
 }
 </style>

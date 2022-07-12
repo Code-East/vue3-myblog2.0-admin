@@ -13,17 +13,25 @@
 </template>
 
 <script setup>
-import { defineProps, ref, watch } from "vue";
+import { defineProps, defineEmits, ref, watch } from "vue";
 const props = defineProps({
   userTotal: String,
+  changPage: Number,
 });
 const emit = defineEmits(["changePage"]);
 const currentPage = ref(1);
-const pageSize = ref(9);
-
+const pageSize = ref(8);
+//监听当前页变化绚烂不同页面的数据
 watch(currentPage, (newval, oldval) => {
   emit("changePage", newval, pageSize.value);
 });
+//监听当前页面变化
+watch(
+  () => props.changPage,
+  (newval) => {
+    currentPage.value = props.changPage;
+  }
+);
 </script>
 
 
