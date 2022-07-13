@@ -7,7 +7,7 @@
       layout="prev, pager, next, jumper"
       v-model:currentPage="currentPage"
       v-model:page-size="pageSize"
-      :total="props.userTotal"
+      :total="props.total"
     />
   </div>
 </template>
@@ -15,7 +15,7 @@
 <script setup>
 import { defineProps, defineEmits, ref, watch } from "vue";
 const props = defineProps({
-  userTotal: String,
+  total: String,
   changPage: Number,
 });
 const emit = defineEmits(["changePage"]);
@@ -29,7 +29,8 @@ watch(currentPage, (newval, oldval) => {
 watch(
   () => props.changPage,
   (newval) => {
-    currentPage.value = props.changPage;
+    console.log("子主建props：", newval);
+    currentPage.value = newval;
   }
 );
 </script>

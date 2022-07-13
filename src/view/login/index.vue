@@ -135,7 +135,7 @@ const submitForm = () => {
 #entrance {
   width: 100vw;
   height: 100vh;
-  background-image: url("@/assets/img/background_img2.png");
+  background-image: url("http://lxoblog-image.test.upcdn.net/background/background01.png");
   display: flex;
   justify-content: center;
   align-items: center;

@@ -27,16 +27,17 @@
   <div class="body">
     <Table
       :tableList="userData"
-      :tableLabel="tableLabel"
-      @deleteUser="clickDeteleUser"
-      @editUser="clickEditUser"
-      @ckeckUser="clickCheckUser"
+      :tableColumns="tableColumns"
+      :currentProp="id"
+      @delete="clickDeteleUser"
+      @edit="clickEditUser"
+      @ckeck="clickCheckUser"
     >
     </Table>
   </div>
   <div class="pagination">
     <pagination
-      :userTotal="userCount"
+      :total="userCount"
       :changPage="currentPage"
       @changePage="pageChangMethod"
     />
@@ -52,7 +53,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { reactive, ref } from "vue";
 import Table from "components/Table.vue";
 import pagination from "components/pagination.vue";
 import Dialog from "./component/Dialog.vue";
@@ -66,6 +67,8 @@ import {
   getSingleUser,
 } from "network/user";
 
+//当前的id为哪个id
+const id = ref("user_id");
 //定义表单数据
 let formData = ref();
 //过滤表格数据函数
@@ -76,9 +79,30 @@ const filterData = (arr) => {
   return arr;
 };
 //当前页面
-let currentPage = ref(0);
-//表格的列名
-let tableLabel = ref("");
+let currentPage = ref(1);
+//表格结构
+let tableColumns = reactive([
+  {
+    label: "id",
+    prop: "user_id",
+  },
+  {
+    label: "用户名",
+    prop: "username",
+  },
+  {
+    label: "昵称",
+    prop: "nickname",
+  },
+  {
+    label: "邮箱",
+    prop: "email",
+  },
+  {
+    label: "管理员",
+    prop: "isadmin",
+  },
+]);
 //用户总数
 let userCount = ref("");
 //用户的数据
@@ -88,17 +112,33 @@ const getUserData = async (currentPage = 1, PageSize = 8) => {
   const data = await getUserList(currentPage, PageSize);
   //过滤是否是管理员 把过滤的数据传递给表格
   userData.value = filterData(data.data);
-  //获取表格的列名
-  tableLabel.value = [...Object.keys(userData.value[0])];
 };
 //获取用户总数
 const getAllUserCount = async (text = "") => {
   const data = await getUserCount(text);
   userCount.value = data.data;
 };
+//搜索用户
+const searchUsers = async (page = 1, pageSize = 8) => {
+  const data = {
+    searchText: searchText.value,
+    page,
+    pageSize,
+  };
+  const res = await searchUser(data);
+  userData.value = filterData(res.data);
+  getAllUserCount(searchText.value);
+};
 //调用获取用户方法
 getUserData();
 getAllUserCount();
+
+//搜索
+const searchText = ref("");
+//点击搜索
+const searchUserClick = async () => {
+  reviewList();
+};
 
 //dialog的title
 const title = ref("增加用户");
@@ -114,19 +154,24 @@ const dialogClose = () => {
   dialogVisible.value = false;
 };
 
-//重新的渲染列表
-const reviewList = (page = 1, pageSize = 8) => {
+//重新获取数据
+const anewGetUserData = (page = 1, pageSize = 8) => {
   //判断是否是搜索状态
   if (searchText.value) {
-    getUserData(page, pageSize);
+    searchUsers(page, pageSize);
     getAllUserCount(searchText.value);
   } else {
     getUserData(page, pageSize);
     getAllUserCount();
   }
 };
+//重新的渲染列表
+const reviewList = () => {
+  //传递单签页面 不跳动页面
+  anewGetUserData(currentPage.value);
+};
 
-//点击删除用户
+//点击表单中删除用户
 const clickDeteleUser = (id) => {
   //询问用户
   ElMessageBox.confirm("确定要删除用户吗？", {
@@ -134,25 +179,24 @@ const clickDeteleUser = (id) => {
     cancelButtonText: "取消",
     type: "warning",
   }).then(async () => {
-    const data = await deleteUser(id);
+    //删除用户
+    await deleteUser(id);
     ElMessage({
       type: "success",
       message: "删除成功",
     });
-
-    currentPage.value = 1;
     //重新绚烂表单
     reviewList();
   });
 };
-//点击编辑用户
+//点击表单中的编辑用户
 const clickEditUser = async (id) => {
   dialogVisible.value = true;
   title.value = "编辑用户";
   const res = await getSingleUser(id);
   formData.value = res.data;
 };
-//点击查看用户
+//点击表单中查看用户
 const clickCheckUser = async (id) => {
   dialogVisible.value = true;
   title.value = "查看用户";
@@ -160,25 +204,11 @@ const clickCheckUser = async (id) => {
   formData.value = res.data;
 };
 
-//搜索
-const searchText = ref("");
-//点击搜索
-const searchUserClick = async (page, pageSize) => {
-  const data = {
-    searchText: searchText.value,
-    page,
-    pageSize,
-  };
-  const res = await searchUser(data);
-  userData.value = filterData(res.data);
-  getAllUserCount(searchText.value);
-};
-
 //分页变化
 const pageChangMethod = (page, pageSize) => {
   currentPage.value = page;
   //重新绚烂表单
-  reviewList(page, pageSize);
+  anewGetUserData(page, pageSize);
 };
 </script>
 

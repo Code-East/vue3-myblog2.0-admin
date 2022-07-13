@@ -9,10 +9,10 @@
     >
       <!-- 循环创建表格 -->
       <el-table-column
-        v-for="(item, i) in tableLabel"
-        :key="item"
-        :prop="item"
-        :label="item"
+        v-for="(item, i) in tableColumns"
+        :key="item.prop"
+        :prop="item.prop"
+        :label="item.label"
       />
       <!-- <el-table-column props="user_id" label="id"></el-table-column>
       <el-table-column props="username" label="用户名"></el-table-column>
@@ -34,30 +34,32 @@ import { defineProps, defineEmits, ref } from "vue";
 //获取props
 const props = defineProps({
   tableList: Array,
-  tableLabel: Object,
+  tableColumns: Array,
+  currentProp: String,
 });
-const emit = defineEmits(["deleteUser", "editUser"]);
-let userId = ref("");
+const emit = defineEmits(["delete", "edit"]);
+let id = ref("");
 //点击表格行触发
 const rowClick = (row) => {
-  userId.value = row.user_id;
+  //传递当前表格中的id
+  id.value = row[props.currentProp];
 };
 //点击删除
 const deleteClick = () => {
   setTimeout(() => {
-    emit("deleteUser", userId.value);
+    emit("delete", id.value);
   });
 };
 //点击编辑
 const editClick = () => {
   setTimeout(() => {
-    emit("editUser", userId.value);
+    emit("edit", id.value);
   });
 };
 //点击查看
 const checkClick = () => {
   setTimeout(() => {
-    emit("ckeckUser", userId.value);
+    emit("ckeck", id.value);
   });
 };
 </script>
