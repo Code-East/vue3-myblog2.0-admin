@@ -12,6 +12,7 @@
         :rules="rules"
         :label-width="formLabelWidth"
         ref="fromRef"
+        @keydown.enter="keyEnter"
       >
         <el-form-item label="用户头像" :label-width="formLabelWidth">
           <el-upload
@@ -34,7 +35,7 @@
           prop="username"
           :label-width="formLabelWidth"
         >
-          <el-input v-model="form.username" :readonly="isCheck" />
+          <el-input v-model="form.username" :disabled="isCheck" />
         </el-form-item>
         <el-form-item
           label="密码"
@@ -45,7 +46,7 @@
             v-model="form.password"
             type="password"
             show-password
-            :readonly="isCheck"
+            :disabled="isCheck"
           />
         </el-form-item>
         <el-form-item
@@ -61,10 +62,10 @@
           :label-width="formLabelWidth"
           prop="nickname"
         >
-          <el-input v-model="form.nickname" :readonly="isCheck" />
+          <el-input v-model="form.nickname" :disabled="isCheck" />
         </el-form-item>
         <el-form-item label="邮箱" :label-width="formLabelWidth" prop="email">
-          <el-input v-model="form.email" :readonly="isCheck" />
+          <el-input v-model="form.email" :disabled="isCheck" />
         </el-form-item>
         <el-form-item label="管理员" :label-width="formLabelWidth">
           <el-switch
@@ -250,7 +251,6 @@ const handleAddCommit = () => {
 const handleEditCommit = async () => {
   fromRef.value.validate(async (valid) => {
     if (valid) {
-      console.log("点击编辑：", form.value);
       await setUser(form.value);
       msg = ElMessage({
         type: "success",
@@ -270,6 +270,14 @@ const handleEditCommit = async () => {
       });
     }
   });
+};
+//按回车
+const keyEnter = () => {
+  if (props.dialogTitle == "增加用户") {
+    handleAddCommit();
+  } else if (props.dialogTitle == "编辑用户") {
+    handleEditCommit();
+  }
 };
 </script>
 

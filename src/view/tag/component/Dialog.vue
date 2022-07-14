@@ -11,9 +11,9 @@
         :model="form"
         @keydown.enter="keyEnter"
       >
-        <el-form-item label="类别名称" :label-width="formLabelWidth">
+        <el-form-item label="标签名称" :label-width="formLabelWidth">
           <el-input
-            v-model.trim="form.category_name"
+            v-model.trim="form.tag_name"
             :disabled="isDisabled"
           ></el-input>
         </el-form-item>
@@ -43,7 +43,7 @@
 
 <script setup>
 import { reactive, ref, watch } from "vue";
-import { addCategory, setCategory } from "network/category";
+import { addTag, setTag } from "network/tag";
 
 const formLabelWidth = "80px";
 let isDisabled = ref(false);
@@ -58,14 +58,14 @@ const props = defineProps({
   formData: Object,
 });
 
-const emit = defineEmits(["closeDialog", "reviewCategory"]);
+const emit = defineEmits(["closeDialog", "review"]);
 
 const addSubmit = ref(false);
 const editSubmit = ref(false);
-if (props.dialogTitle == "增加类别") {
+if (props.dialogTitle == "增加标签") {
   addSubmit.value = true;
   editSubmit.value = false;
-} else if (props.dialogTitle == "编辑类别") {
+} else if (props.dialogTitle == "编辑标签") {
   editSubmit.value = true;
   addSubmit.value = false;
 } else {
@@ -77,7 +77,7 @@ if (props.dialogTitle == "增加类别") {
 
 //from对象
 let form = ref({
-  category_name: "",
+  tag_name: "",
   create_time: "",
 });
 //监视传递过来的表单
@@ -97,18 +97,19 @@ const dialogClose = () => {
 
 // //点击增加按钮的处理函数
 const handleAddCommit = async () => {
-  if (form.value.category_name && form.value.create_time) {
+  //判断是否填写了内容
+  if (form.value.tag_name && form.value.create_time) {
     const data = {
-      category_name: form.value.category_name,
+      tag_name: form.value.tag_name,
       create_time: form.value.create_time,
     };
-    await addCategory(data);
+    await addTag(data);
     msg = ElMessage({
       type: "success",
       message: "增加成功！",
     });
-    //重新绚烂category列表
-    emit("reviewCategory");
+    //重新绚烂tag列表
+    emit("review");
     //关闭弹窗
     dialogClose();
   } else {
@@ -117,20 +118,20 @@ const handleAddCommit = async () => {
     }
     msg = ElMessage({
       type: "warning",
-      message: "请填写列表名！",
+      message: "请填写内容进行修改！",
     });
   }
 };
 // //点击编辑发送编辑请求
 const handleEditCommit = async () => {
-  if (form.value.category_name && form.value.create_time) {
-    await setCategory(form.value);
+  if (form.value.tag_name && form.value.create_time) {
+    await setTag(form.value);
     msg = ElMessage({
       type: "success",
       message: "修改成功！",
     });
-    //重新绚烂category列表
-    emit("reviewCategory");
+    //重新绚烂tag列表
+    emit("review");
     //关闭dialog弹窗
     dialogClose();
   } else {
@@ -143,12 +144,13 @@ const handleEditCommit = async () => {
     });
   }
 };
+
 //按回车
 const keyEnter = () => {
   console.log("key");
-  if (props.dialogTitle == "增加类别") {
+  if (props.dialogTitle == "增加标签") {
     handleAddCommit();
-  } else if (props.dialogTitle == "编辑类别") {
+  } else if (props.dialogTitle == "编辑标签") {
     handleEditCommit();
   }
 };
