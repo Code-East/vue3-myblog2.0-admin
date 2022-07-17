@@ -40,21 +40,12 @@
       @changePage="pageChangMethod"
     />
   </div>
-  <Dialog
-    :dialogStatus="dialogVisible"
-    :dialogTitle="title"
-    :formData="formData"
-    v-if="dialogVisible"
-    @closeDialog="dialogClose"
-    @review="reviewList"
-  />
 </template>
 
 <script setup>
 import { reactive, ref } from "vue";
 import Table from "components/Table.vue";
 import pagination from "components/pagination.vue";
-// import Dialog from "./component/Dialog.vue";
 import { Search } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import {
@@ -62,9 +53,13 @@ import {
   getArticleCount,
   search,
   deleteArticle,
-  // getSingleArticle,
+  getAuthorArticles,
+  getAuthorArticleCount,
+  searchAuthorArticle,
 } from "network/article.js";
-
+import { useRouter } from "vue-router";
+const author = JSON.parse(localStorage.getItem("userinfo")).username;
+const router = useRouter();
 //过滤数据
 const filterData = (arr) => {
   arr.forEach((item) => {
@@ -80,10 +75,6 @@ let formData = ref("");
 let currentPage = ref(1);
 //表格结构
 let tableColumns = reactive([
-  {
-    label: "id",
-    prop: "article_id",
-  },
   {
     label: "文章名",
     prop: "title",
@@ -115,6 +106,18 @@ const getAllArticle = async (text = "") => {
   const data = await getArticleCount(text);
   articleCount.value = data.data;
 };
+
+//获取非管理员文章列表
+const getAuthorArticleData = async (currentPage = 1, PageSize = 8) => {
+  const res = await getAuthorArticles(currentPage, PageSize, author);
+  console.log(res);
+  articleData.value = filterData(res.data);
+};
+//获取非管理员文章总数
+const getAllAuthorArticle = async (text = "") => {
+  const data = await getAuthorArticleCount(text, author);
+  articleCount.value = data.data;
+};
 //搜索文章
 const searchArticle = async (page = 1, pageSize = 8) => {
   const data = {
@@ -126,10 +129,27 @@ const searchArticle = async (page = 1, pageSize = 8) => {
   articleData.value = filterData(res.data);
   getAllArticle(searchText.value);
 };
+//搜索作者文章
+const searchAuthorPassage = async (page = 1, pageSize = 8) => {
+  const data = {
+    searchText: searchText.value,
+    page,
+    pageSize,
+    author,
+  };
+  const res = await searchAuthorArticle(data);
+  articleData.value = filterData(res.data);
+  getAllArticle(searchText.value);
+};
 
-//调用获取文章方法
-getArticleData();
-getAllArticle();
+if (JSON.parse(localStorage.getItem("userinfo")).isadmin == 1) {
+  //调用获取文章方法
+  getArticleData();
+  getAllArticle();
+} else {
+  getAuthorArticleData();
+  getAllAuthorArticle();
+}
 
 //搜索
 const searchText = ref("");
@@ -138,30 +158,31 @@ const searchClick = async () => {
   reviewList();
 };
 
-//dialog的title
-const title = ref("增加文章");
-//dialog是否显示
-const dialogVisible = ref(false);
-
 //定义点击增加按钮的函数 显示dialog框
 const clickAdd = () => {
-  // dialogVisible.value = true;
-  // title.value = "增加文章";
+  router.push("addarticle");
 };
-//关闭dialog框
-// const dialogClose = () => {
-//   dialogVisible.value = false;
-// };
 
 //重新获取数据
 const anewgetArticleData = (page = 1, pageSize = 8) => {
   //判断是否是搜索状态
-  if (searchText.value) {
-    searchArticle(page, pageSize);
-    getAllArticle(searchText.value);
+  if (JSON.parse(localStorage.getItem("userinfo")).isadmin == 1) {
+    //调用获取文章方法
+    if (searchText.value) {
+      searchArticle(page, pageSize);
+      getAllArticle(searchText.value);
+    } else {
+      getArticleData(page, pageSize);
+      getAllArticle();
+    }
   } else {
-    getArticleData(page, pageSize);
-    getAllArticle();
+    if (searchText.value) {
+      searchAuthorPassage(page, pageSize);
+      getAllArticle(searchText.value);
+    } else {
+      getAuthorArticleData(page, pageSize);
+      getAllAuthorArticle();
+    }
   }
 };
 
@@ -191,17 +212,23 @@ const clickDetele = (id) => {
 };
 //点击表单中的编辑文章
 const clickEdit = async (id) => {
-  // dialogVisible.value = true;
-  // title.value = "编辑文章";
-  // const res = await getSingleArticle(id);
-  // formData.value = res.data;
+  router.push({
+    path: "editorcheck",
+    query: {
+      id,
+      type: "编辑",
+    },
+  });
 };
 //点击表单中查看文章
 const clickCheck = async (id) => {
-  // dialogVisible.value = true;
-  // title.value = "查看文章";
-  // const res = await getSingleArticle(id);
-  // formData.value = res.data;
+  router.push({
+    path: "editorcheck",
+    query: {
+      id,
+      type: "查看",
+    },
+  });
 };
 
 //分页变化

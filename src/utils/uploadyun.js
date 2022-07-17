@@ -1,5 +1,6 @@
 import CryptoJS from 'crypto-js'
 
+//生成上upload组件 data属性中 必要属性 并传出
 const upyunSignature = (folder) => {
     let policy = window.btoa(JSON.stringify({
         'bucket': 'lxoblog-image',

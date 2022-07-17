@@ -1,5 +1,11 @@
 import request from './request.js'
 
+//获取所有标签列表
+export const getAllTags = () => {
+    return request({
+        url: '/tag/getalltags',
+    })
+}
 //获取标签列表
 export const getTags = (page, pageSize) => {
     return request({

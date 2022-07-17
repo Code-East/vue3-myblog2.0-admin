@@ -83,10 +83,6 @@ let currentPage = ref(1);
 //表格结构
 let tableColumns = reactive([
   {
-    label: "id",
-    prop: "user_id",
-  },
-  {
     label: "用户名",
     prop: "username",
   },

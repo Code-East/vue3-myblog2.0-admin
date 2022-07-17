@@ -79,10 +79,6 @@ let currentPage = ref(1);
 //表格结构
 let tableColumns = reactive([
   {
-    label: "id",
-    prop: "category_id",
-  },
-  {
     label: "分类名",
     prop: "category_name",
   },

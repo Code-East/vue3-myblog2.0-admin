@@ -54,7 +54,16 @@ const router = createRouter({
                     name: 'tag',
                     component: () => import('view/tag/index.vue')
                 },
-
+                {
+                    path: 'addarticle',
+                    name: 'addarticle',
+                    component: () => import('view/article/addarticle/index.vue')
+                },
+                {
+                    path: 'editorcheck',
+                    name: 'editorcheck',
+                    component: () => import('view/article/editorcheck/index.vue')
+                },
             ]
         }
     ]

@@ -1,7 +1,7 @@
 export const rulesObj = {
     username: [
         { required: true, message: "请输入用户名", trigger: "blur" },
-        { min: 5, max: 12, message: "用户名长度必须在5-12之间", trigger: "blur" },
+        { min: 2, max: 12, message: "用户名长度必须在2-12之间", trigger: "blur" },
     ],
     password: [
         { required: true, message: "请输入密码", trigger: "blur" },

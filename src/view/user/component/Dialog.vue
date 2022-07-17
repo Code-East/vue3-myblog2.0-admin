@@ -164,7 +164,6 @@ const dialogClose = () => {
 
 //点击上传
 const uploadClick = () => {
-  console.log(props.dialogTitle);
   if (props.dialogTitle == "查看用户") {
     //禁用文件上传
     if (msg) {
@@ -311,8 +310,7 @@ const keyEnter = () => {
 }
 ::v-deep .el-upload-list {
   position: relative;
-  position: relative;
-  top: -95%;
+  top: -10%;
   left: 115%;
 }
 </style>

@@ -1,6 +1,6 @@
 import request from './request.js'
 
-//获取标签列表
+//获取文章列表
 export const getArticles = (page, pageSize) => {
     return request({
         url: '/article/getarticles',
@@ -10,32 +10,60 @@ export const getArticles = (page, pageSize) => {
         }
     })
 }
-//获取标签总数
+//获取文章总数
 export const getArticleCount = (text) => {
     return request({
         url: '/article/getcount?text=' + text
     })
 }
-//增加标签
+//获取文章列表
+export const getAuthorArticles = (page, pageSize, author) => {
+    return request({
+        url: '/article/getauthorarticles',
+        params: {
+            page,
+            pageSize,
+            author
+        }
+    })
+}
+//获取文章总数
+export const getAuthorArticleCount = (text, author) => {
+    return request({
+        url: '/article/getauthorarticleCount',
+        params: {
+            text,
+            author
+        }
+    })
+}
+//增加文章
 export const addArticle = (data) => {
     return request({
-        url: '/article/add',
+        url: '/article/addarticle',
         method: 'post',
         data
     })
 }
-//搜索标签
+//搜索文章
 export const search = (data) => {
     return request({
         url: "/article/search",
         params: data
     })
 }
+//搜索作者文章
+export const searchAuthorArticle = (data) => {
+    return request({
+        url: "/article/searchauthorarticle",
+        params: data
+    })
+}
 
-//删除标签的请求函数
+//删除文章的请求函数
 export const deleteArticle = (id) => {
     return request({
-        url: '/article/delete',
+        url: '/article/deletearticle',
         method: 'post',
         data: {
             id
@@ -43,17 +71,17 @@ export const deleteArticle = (id) => {
     })
 }
 
-//获取单个标签的请求
+//获取单个文章的请求
 export const getSingleArticle = (id) => {
     return request({
-        url: '/article/getsingle/' + id
+        url: '/article/getsinglearticle/' + id
     })
 }
 
-//修改标签
+//修改文章
 export const setArticle = (data) => {
     return request({
-        url: '/article/update',
+        url: '/article/setarticle',
         method: "post",
         data
     })

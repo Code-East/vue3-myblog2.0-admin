@@ -1,5 +1,11 @@
 import request from './request.js'
 
+//获取所有类别
+export const getAllCategorys = () => {
+    return request({
+        url: '/category/getallcategorys'
+    })
+}
 //获取类别列表
 export const getCategorys = (page, pageSize) => {
     return request({
