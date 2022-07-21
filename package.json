@@ -12,6 +12,7 @@
     "animate.css": "^4.1.1",
     "axios": "^0.27.2",
     "crypto-js": "^4.1.1",
+    "echarts": "^5.3.3",
     "element-plus": "^2.2.5",
     "md-editor-v3": "^2.2.1",
     "path": "^0.12.7",

@@ -11,7 +11,7 @@ export const getArticles = (page, pageSize) => {
     })
 }
 //获取文章总数
-export const getArticleCount = (text) => {
+export const getArticleCount = (text = '') => {
     return request({
         url: '/article/getcount?text=' + text
     })

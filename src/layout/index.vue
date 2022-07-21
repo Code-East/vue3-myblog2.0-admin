@@ -35,13 +35,13 @@ const checkTokenTime = async () => {
   }
 };
 checkTokenTime();
-
-checkTokenTime();
 </script>
 
 
 <style lang="scss" scoped>
 .common-layout {
+  min-width: 1200px;
+  max-width: 1536px;
   height: 100vh;
 }
 .aside {

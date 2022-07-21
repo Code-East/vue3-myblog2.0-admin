@@ -20,7 +20,7 @@
         <el-form-item label="创建时间" :label-width="formLabelWidth">
           <el-date-picker
             v-model="form.create_time"
-            type="date"
+            type="datetime"
             placeholder="选择日期"
             :disabled="isDisabled"
           />

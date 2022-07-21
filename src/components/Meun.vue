@@ -80,12 +80,6 @@ const commonList = reactive([
     path: "/article",
     icon: "Document",
   },
-  {
-    id: 4,
-    name: "评论管理",
-    path: "/comment",
-    icon: "ChatLineSquare",
-  },
 ]);
 
 const isadmin = JSON.parse(localStorage.getItem("userinfo")).isadmin;

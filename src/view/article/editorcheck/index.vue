@@ -77,16 +77,16 @@
           :action="uploadAction"
           :data="fileData"
           :limit="1"
-          v-if="!isCheck"
+          :disabled="isCheck"
         >
           <el-button type="primary">点击上传图片</el-button>
+          <img
+            v-if="article.article_form.article_img"
+            :src="article.article_form.article_img"
+            class="article_img"
+            alt="文章图片"
+          />
         </el-upload>
-        <img
-          v-else
-          :src="article.article_form.article_img"
-          alt=""
-          class="article_img"
-        />
       </el-form-item>
       <el-form-item label="文章内容">
         <el-button type="primary" @click="detail_click" v-if="!isCheck"
@@ -107,8 +107,12 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button @click="resetForm">取消</el-button>
-        <el-button type="primary" @click="submitForm" v-if="!isCheck"
+        <el-button @click="resetForm" size="large">取消</el-button>
+        <el-button
+          type="primary"
+          @click="submitForm"
+          v-if="!isCheck"
+          size="large"
           >编辑</el-button
         >
       </el-form-item>
@@ -281,10 +285,9 @@ const resetForm = () => {
   width: 600px !important ;
 }
 .article_img {
-  width: 300px;
-  height: 100px;
-  background-position: center center;
-  background-size: 100% 100%;
+  width: 200px;
+  height: 90px;
+  margin-left: 10px;
 }
 .form {
   width: 50%;
