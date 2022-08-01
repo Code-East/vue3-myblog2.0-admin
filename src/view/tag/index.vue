@@ -138,7 +138,6 @@ const dialogClose = () => {
 const anewGettagData = (page = 1, pageSize = 8) => {
   //判断是否是搜索状态
   if (searchText.value) {
-    console.log("hello", searchText.value);
     searchtags(page, pageSize);
     getAlltag(searchText.value);
   } else {

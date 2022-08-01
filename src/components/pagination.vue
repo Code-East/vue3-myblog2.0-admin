@@ -29,7 +29,6 @@ watch(currentPage, (newval, oldval) => {
 watch(
   () => props.changPage,
   (newval) => {
-    console.log("子主建props：", newval);
     currentPage.value = newval;
   }
 );

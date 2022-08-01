@@ -248,13 +248,6 @@ const submitForm = async () => {
       router.replace("article");
     }
   } else {
-    console.log(
-      article.article_form.article_summary,
-      article.article_form.created_time,
-      article.article_form.title,
-      article.article_form.category,
-      article.tag.length
-    );
     if (msg) {
       msg.close();
     }

@@ -8,6 +8,7 @@ import ElementPlus from 'unplugin-element-plus/vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: './',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
@@ -29,7 +30,7 @@ export default defineConfig({
 
   ],
   server: {
-    port: '8080',
+    port: '8081',
     proxy: {
       '/api': {
         target: 'http://localhost:3000',

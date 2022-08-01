@@ -110,7 +110,6 @@ const getAllArticle = async (text = "") => {
 //获取非管理员文章列表
 const getAuthorArticleData = async (currentPage = 1, PageSize = 8) => {
   const res = await getAuthorArticles(currentPage, PageSize, author);
-  console.log(res);
   articleData.value = filterData(res.data);
 };
 //获取非管理员文章总数

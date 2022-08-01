@@ -48,17 +48,12 @@ const html_context = ref("");
 watch(
   () => props.detailContent,
   (newval) => {
-    console.log("watch", newval);
     md_context.value = newval.content_md;
   }
 );
 
 const htmlChange = (value) => {
   html_context.value = value;
-};
-//保存文章触发的钩子 val为md的内容
-const save = (val) => {
-  console.log(val);
 };
 //点击保存按钮触发的函数 保存内容到父组件
 const dialogClose = () => {

@@ -48,3 +48,20 @@ export const getReplyComment = (id) => {
         url: '/comment/getreplycomment/' + id
     })
 }
+
+//根据文章id 获取评论
+export const getCommentList = (id) => {
+    return request({
+        url: '/comment/getcommentlist',
+        params:{
+            id
+        }
+    })
+}
+
+//获取最新的评论
+export const getNewComment = () => {
+    return request({
+        url: '/comment/getnewcomment',
+    })
+}
