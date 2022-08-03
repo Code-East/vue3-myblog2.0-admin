@@ -38,8 +38,8 @@ import {
   getComments,
   getallLike,
   getArticleCatrgory,
+  getArticleCount
 } from "network/index.js";
-import { getArticleCount } from "network/article.js";
 import { getCommentCount } from "network/comment.js";
 import * as echarts from "echarts";
 // 基于准备好的dom，初始化echarts实例
@@ -82,9 +82,9 @@ const getData = async () => {
   const allLike = await getallLike();
   const allArticle = await getArticleCount();
   const allComment = await getCommentCount();
-  const articlePercent = (article.data / allArticle.data).toFixed(2) * 100;
-  const likePercent = (like.data / allLike.data).toFixed(2) * 100;
-  const commentPercent = (comment.data / allComment.data).toFixed(2) * 100;
+  const articlePercent = ((article.data / allArticle.data)* 100).toFixed(2) ;
+  const likePercent = ((comment.data / allComment.data)*100).toFixed(2);
+  const commentPercent = ((comment.data / allComment.data)* 100).toFixed(2) ;
   cardData[0].count = article.data;
   cardData[0].percent = articlePercent;
   cardData[1].count = comment.data;
@@ -131,14 +131,17 @@ const getData = async () => {
         },
       ],
     });
+    //停止加载动画
     myChart.hideLoading();
   });
 };
 getData();
 
+//一定要在onMounted中挂载echarts 这样才能获取dom树
 onMounted(async () => {
   //在monunted中绑定盒子
   myChart = echarts.init(document.getElementById("mychart"));
+  //显示加载动画
   myChart.showLoading();
 });
 </script>

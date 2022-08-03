@@ -64,9 +64,11 @@ const comment_data = ref([]);
 const noComment = ref(true);
 const get_comment_list = async (id) => {
   const res = await getCommentList(id);
-  if (res.data.length >= 1) {
+  if (res.data) {
     noComment.value = false;
     comment_data.value = filterComment(res.data);
+  }else{
+    noComment.value = true;
   }
 };
 watch(

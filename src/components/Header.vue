@@ -10,7 +10,6 @@ import PageHeader from "./PageHeader.vue";
 import UserAvatar from "./UserAvatar.vue";
 </script>
 
-
 <style lang="scss" scoped>
 .navbar {
   width: 100%;

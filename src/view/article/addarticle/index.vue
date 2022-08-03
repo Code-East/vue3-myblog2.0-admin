@@ -140,8 +140,8 @@ const rules = reactive({
     { required: true, message: "请输入文章标题", trigger: "blur" },
     {
       min: 2,
-      max: 15,
-      message: "标题的长度要在2到15个字符之前哦",
+      max: 30,
+      message: "标题的长度要在2到30个字符之前哦",
       trigger: "blur",
     },
   ],

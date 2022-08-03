@@ -7,7 +7,7 @@
     text-color="#fff"
     router
   >
-    <template v-for="item in asideList" :key="item.id">
+    <template v-for="item in list" :key="item.id">
       <el-menu-item :index="item.path" @click="savePath(item.path)">
         <el-icon>
           <component :is="item.icon"></component>
@@ -21,70 +21,17 @@
 <script setup>
 import { reactive, ref, watch } from "vue";
 import { useRoute } from "vue-router";
+import { getMeunList } from "network/index"
 
 const route = useRoute();
-const adminList = reactive([
-  {
-    id: 1,
-    name: "首页",
-    path: "/index",
-    icon: "House",
-  },
-  {
-    id: 2,
-    name: "用户管理",
-    path: "/user",
-    icon: "User",
-  },
-  {
-    id: 3,
-    name: "文章管理",
-    path: "/article",
-    icon: "Document",
-  },
-  {
-    id: 4,
-    name: "类别管理",
-    path: "/category",
-    icon: "Paperclip",
-  },
-  {
-    id: 5,
-    name: "标签管理",
-    path: "/tag",
-    icon: "CollectionTag",
-  },
-  {
-    id: 6,
-    name: "评论管理",
-    path: "/comment",
-    icon: "ChatLineSquare",
-  },
-]);
-const commonList = reactive([
-  {
-    id: 1,
-    name: "首页",
-    path: "/index",
-    icon: "House",
-  },
-  {
-    id: 2,
-    name: "个人中心",
-    path: "/personal",
-    icon: "User",
-  },
-  {
-    id: 3,
-    name: "文章管理",
-    path: "/article",
-    icon: "Document",
-  },
-]);
+const list = ref('');
+//获取aside列表
+const get_meun_list = async () => {
+  const res = await getMeunList()
+  list.value = res.data.list;
+}
+get_meun_list();
 
-const isadmin = JSON.parse(localStorage.getItem("userinfo")).isadmin;
-//查看是否是admin用户从而选择性绚烂左侧列表
-const asideList = isadmin == 1 ? adminList : commonList;
 //保存当前点击的path 刷新页面就不会跳转了
 let nowPath = ref(localStorage.getItem("nowPath"));
 const savePath = (path) => {

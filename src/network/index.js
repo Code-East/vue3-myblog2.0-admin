@@ -35,3 +35,15 @@ export const getArticleCatrgory = () => {
         url: '/getarticlecatrgory'
     })
 }
+//获取用户权限
+export const getMeunList = () => {
+    return request({
+        url: '/getmeunlist'
+    })
+}
+//获取所有文章总数
+export const getArticleCount = (text = '') => {
+    return request({
+        url: '/article/getcount?text=' + text
+    })
+}

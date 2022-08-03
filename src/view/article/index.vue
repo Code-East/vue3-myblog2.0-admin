@@ -53,9 +53,6 @@ import {
   getArticleCount,
   search,
   deleteArticle,
-  getAuthorArticles,
-  getAuthorArticleCount,
-  searchAuthorArticle,
 } from "network/article.js";
 import { useRouter } from "vue-router";
 const author = JSON.parse(localStorage.getItem("userinfo")).username;
@@ -96,7 +93,7 @@ let tableColumns = reactive([
 let articleCount = ref("");
 //文章的数据
 let articleData = ref("");
-//获取文章列表和总数 将这个方法绑定到子组件分页里面
+//获取文章列表
 const getArticleData = async (currentPage = 1, PageSize = 8) => {
   const res = await getArticles(currentPage, PageSize);
   articleData.value = filterData(res.data);
@@ -107,16 +104,6 @@ const getAllArticle = async (text = "") => {
   articleCount.value = data.data;
 };
 
-//获取非管理员文章列表
-const getAuthorArticleData = async (currentPage = 1, PageSize = 8) => {
-  const res = await getAuthorArticles(currentPage, PageSize, author);
-  articleData.value = filterData(res.data);
-};
-//获取非管理员文章总数
-const getAllAuthorArticle = async (text = "") => {
-  const data = await getAuthorArticleCount(text, author);
-  articleCount.value = data.data;
-};
 //搜索文章
 const searchArticle = async (page = 1, pageSize = 8) => {
   const data = {
@@ -128,27 +115,9 @@ const searchArticle = async (page = 1, pageSize = 8) => {
   articleData.value = filterData(res.data);
   getAllArticle(searchText.value);
 };
-//搜索作者文章
-const searchAuthorPassage = async (page = 1, pageSize = 8) => {
-  const data = {
-    searchText: searchText.value,
-    page,
-    pageSize,
-    author,
-  };
-  const res = await searchAuthorArticle(data);
-  articleData.value = filterData(res.data);
-  getAllArticle(searchText.value);
-};
-
-if (JSON.parse(localStorage.getItem("userinfo")).isadmin == 1) {
-  //调用获取文章方法
-  getArticleData();
-  getAllArticle();
-} else {
-  getAuthorArticleData();
-  getAllAuthorArticle();
-}
+//调用获取文章方法
+getArticleData();
+getAllArticle();
 
 //搜索
 const searchText = ref("");
@@ -165,23 +134,13 @@ const clickAdd = () => {
 //重新获取数据
 const anewgetArticleData = (page = 1, pageSize = 8) => {
   //判断是否是搜索状态
-  if (JSON.parse(localStorage.getItem("userinfo")).isadmin == 1) {
-    //调用获取文章方法
-    if (searchText.value) {
-      searchArticle(page, pageSize);
-      getAllArticle(searchText.value);
-    } else {
-      getArticleData(page, pageSize);
-      getAllArticle();
-    }
+  //调用获取文章方法
+  if (searchText.value) {
+    searchArticle(page, pageSize);
+    getAllArticle(searchText.value);
   } else {
-    if (searchText.value) {
-      searchAuthorPassage(page, pageSize);
-      getAllArticle(searchText.value);
-    } else {
-      getAuthorArticleData(page, pageSize);
-      getAllAuthorArticle();
-    }
+    getArticleData(page, pageSize);
+    getAllArticle();
   }
 };
 
