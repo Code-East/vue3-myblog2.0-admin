@@ -23,7 +23,8 @@ const props = defineProps({
   dialogVisible: Boolean,
   articleId:Number
 });
-const id = ref();
+
+const id = ref(props.articleId);
 watch(()=>props.articleId,(val)=>{
   id.value = val;
 })

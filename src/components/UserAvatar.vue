@@ -7,7 +7,7 @@
       <template #dropdown>
         <el-dropdown-menu>
           <el-dropdown-item v-for="item in comment_data" :key="item.comment_id">
-            <div>
+            <div @click="clickMessgae(item.article_id)">
               <span style="color:#3498db;font-weight:900">{{item.comment_nickname}}</span>
               <span>评论文章id为<span style="color:#d35400;font-weight:900">{{item.article_id}}</span>:</span>
               <span>{{item.content}}</span>
@@ -55,11 +55,22 @@ const outLogin = () => {
 };
 
 const comment_data = ref();
+//获取最新评论
 const get_new_comment = async ()=>{
   const res = await getNewComment();
   comment_data.value = res.data;
 }
 get_new_comment();
+
+//点击评论信息
+const clickMessgae = (id) => {
+  router.push({
+    path:'/comment',
+    query:{
+      id
+    }
+  })
+}
 </script>
 
 

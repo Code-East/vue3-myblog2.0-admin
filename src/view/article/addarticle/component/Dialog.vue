@@ -14,8 +14,6 @@
         :toolbarsExclude="toolbars"
         @onHtmlChanged="htmlChange"
       />
-      <!-- @onChange="textChange"
-         -->
       <div class="bottom">
         <el-button type="primary" size="large" @click="dialogClose"
           >保存</el-button
@@ -46,7 +44,7 @@ const htmlChange = (value) => {
 };
 //保存文章触发的钩子 val为md的内容
 const save = (val) => {
-  console.log(val);
+
 };
 //点击保存按钮触发的函数 保存内容到父组件
 // const saveExit = () => {

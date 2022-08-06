@@ -59,6 +59,7 @@ import { ElMessage } from "element-plus";
 const props = defineProps({
   articleId: Number,
 });
+
 const comment_data = ref([]);
 //获取评论列表
 const noComment = ref(true);
@@ -71,13 +72,19 @@ const get_comment_list = async (id) => {
     noComment.value = true;
   }
 };
+//监视id变化
 watch(
   () => props.articleId,
   (val) => {
     get_comment_list(val);
   }
 );
+//判断是否传入id
+if(props.articleId){
+  get_comment_list(props.articleId);
+}
 
+//删除评论
 const deleteClick = async (id) => {
   const res = await deleteComment(id);
   if (res.code === 0) {

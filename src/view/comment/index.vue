@@ -56,6 +56,9 @@ import { ref } from "vue";
 import { getArticles, getArticleCount, search } from "network/article.js";
 import { Search } from "@element-plus/icons-vue";
 import Dialog from "./component/Dialog.vue";
+import { useRoute } from "vue-router"
+
+const route = useRoute();
 
 const searchText = ref("");
 //当前页面
@@ -119,6 +122,16 @@ const article_id = ref("");
 const rowClick = (row) => {
   article_id.value = row.article_id;
 };
+
+//判断是是否从消息点过来
+if (route.query.id) {
+  dialogVisible.value = true;
+  article_id.value = route.query.id;
+}else{
+  dialogVisible.value = false;
+  article_id.value = '';
+}
+
 </script>
 
 

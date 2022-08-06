@@ -76,7 +76,7 @@ getMeunList().then((res)=>{
 //定义不需要token 也可进入的白名单
 const whiteList = ['/login'];
 //定义只有管理员才能访问的页面黑名单
-const blockList = ['/user', '/tag', '/category', '/comment']
+const blockList = ['/user', '/tag', '/category']
 //定义路由的前置守卫
 router.beforeEach((to, from, next) => {
     //判断localStorage中是否存在token 也就是判断是否登入
